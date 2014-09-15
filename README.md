@@ -23,7 +23,7 @@ Version 2.0.0
 -------------
 _Released 2014-09-14_
 
-*	Tweaked to work with the addition of the new "Read Status" column
+*	AMP Sorting has been completely rewritten from the ground up!
 	*	Now displays native GameFAQs sorting options above AMP table to allow for usage of different GameFAQs sorting methods (which sorts ALL active messages, not just the current page) in conjunction with AMP Sorting script
 *	Renamed script file to `GameFAQs_AMP_Sorting`
 *	**IF UPDATING FROM A PREVIOUS VERSION THEN YOU MAY NEED TO UNINSTALL THE PREVIOUS VERSION OF THE SCRIPT.**
