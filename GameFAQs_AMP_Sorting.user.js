@@ -43,7 +43,7 @@ var i, sortBtnHoverBG, ampSort,
 	} ) ) );
 
 // Clone sortSettings to regular localStorage in preparation for future transition to localStorage over current GM_setValue storage
-localStorage( 'o120-sort-settings', JSON.stringify( sortSettings ) );
+localStorage.setItem( 'o120-sort-settings', JSON.stringify( sortSettings ) );
 
 // Get ".paginate > li > a:hover" style
 for ( i = 0; i < cssRLen; i++ ) {
@@ -436,7 +436,7 @@ TableSort.prototype.sortCol = function ( el, btn, sortColumn, sortOrder ) {
 	GM_setValue( 'o120-sort-settings', JSON.stringify( sortSettings ) );
 
 	// Clone sortSettings to regular localStorage in preparation for future transition to localStorage over current GM_setValue storage
-	localStorage( 'o120-sort-settings', JSON.stringify( sortSettings ) );
+	localStorage.setItem( 'o120-sort-settings', JSON.stringify( sortSettings ) );
 
 	/*
 	 *  Reorder HTML table based on new order of data found in the col array
