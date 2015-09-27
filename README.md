@@ -19,6 +19,13 @@ Use with one of the following browser extensions:
 Release Notes
 =============
 
+Version 2.0.1
+-------------
+_Released 2015-09-27_
+
+*	Removed lines from beginning of script that I don't remember putting there but apparently break the script for certain people (including myself >_>)
+*	Now saves current sort settings to localStorage on load and on sort to ease future transition away from GM_* functions (specifically GM_*etValue)
+
 Version 2.0.0
 -------------
 _Released 2014-09-14_

@@ -1,12 +1,12 @@
-// ==UserScript==
+﻿// ==UserScript==
 // @name            GameFAQs AMP Sorting
 // @namespace       OTACON120
 // @author          OTACON120
 // @license         http://opensource.org/licenses/MIT
-// @version         2.0.0
+// @version         2.0.1
 // @description     Gives the ability to sort GameFAQs Message Boards' "Active Messages" list
-// @updateURL       https://greasyfork.org/scripts/620-gamefaqs-amp-sorting/code/GameFAQs%20AMP%20Sorting.meta.js
-// @downloadURL     https://greasyfork.org/scripts/620-gamefaqs-amp-sorting/code/GameFAQs%20AMP%20Sorting.user.js
+// @updateURL       http://otacon120.com/user-script-files/meta/gamefaqs-related/amp-sorting/
+// @downloadURL     http://otacon120.com/user-script-files/script/gamefaqs-related/amp-sorting/GameFAQS_AMP_Sorting.user.js
 // @website         http://otacon120.com/scripts/amp-sorting/
 // @contributionURL https://www.paypal.com/us/cgi-bin/webscr?cmd=_flow&SESSION=LgkxqunuQlKnhicHni4dzQajlENrZQbtNOuCyKJcbq1o5msoIEB0UyzAZYS&dispatch=5885d80a13c0db1f8e263663d3faee8dbd0a2170b502f343d92a90377a9956d7
 // @include     http://*.gamefaqs.com/boards/myposts.php*
@@ -15,9 +15,6 @@
 // @grant       GM_setValue
 // @grant       GM_addStyle
 // ==/UserScript==
-if ( window.top !== window.self ) {
-	return;
-}
 
 var i, sortBtnHoverBG, ampSort,
 	siteCSS        = document.styleSheets[0].cssRules,
@@ -44,6 +41,9 @@ var i, sortBtnHoverBG, ampSort,
 		subSort:      null,
 		sortOrder:    'dsc'
 	} ) ) );
+
+// Clone sortSettings to regular localStorage in preparation for future transition to localStorage over current GM_setValue storage
+localStorage( 'o120-sort-settings', JSON.stringify( sortSettings ) );
 
 // Get ".paginate > li > a:hover" style
 for ( i = 0; i < cssRLen; i++ ) {
@@ -434,6 +434,10 @@ TableSort.prototype.sortCol = function ( el, btn, sortColumn, sortOrder ) {
 	sortSettings.sortedColumn = th.cIdx;
 
 	GM_setValue( 'o120-sort-settings', JSON.stringify( sortSettings ) );
+
+	// Clone sortSettings to regular localStorage in preparation for future transition to localStorage over current GM_setValue storage
+	localStorage( 'o120-sort-settings', JSON.stringify( sortSettings ) );
+
 	/*
 	 *  Reorder HTML table based on new order of data found in the col array
 	 */
