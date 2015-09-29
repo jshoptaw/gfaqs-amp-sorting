@@ -3,14 +3,13 @@
 // @namespace       OTACON120
 // @author          OTACON120
 // @license         http://opensource.org/licenses/MIT
-// @version         2.0.1
+// @version         2.0.2
 // @description     Gives the ability to sort GameFAQs Message Boards' "Active Messages" list
 // @updateURL       http://otacon120.com/user-script-files/meta/gamefaqs-related/amp-sorting/
-// @downloadURL     http://otacon120.com/user-script-files/script/gamefaqs-related/amp-sorting/GameFAQS_AMP_Sorting.user.js
+// @downloadURL     http://otacon120.com/user-script-files/script/gamefaqs-related/amp-sorting/GameFAQs_AMP_Sorting.user.js
 // @website         http://otacon120.com/scripts/amp-sorting/
 // @contributionURL https://www.paypal.com/us/cgi-bin/webscr?cmd=_flow&SESSION=LgkxqunuQlKnhicHni4dzQajlENrZQbtNOuCyKJcbq1o5msoIEB0UyzAZYS&dispatch=5885d80a13c0db1f8e263663d3faee8dbd0a2170b502f343d92a90377a9956d7
-// @include     http://*.gamefaqs.com/boards/myposts.php*
-// @match       http://*.gamefaqs.com/boards/myposts.php*
+// @match       http://*.gamefaqs.com/user/messages*
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_addStyle
@@ -22,19 +21,19 @@ var i, sortBtnHoverBG, ampSort,
 	sortBtnStyle   = getComputedStyle( document.querySelector( '.main_content .paginate > li > a' ) ),
 	ampTable       = document.querySelector( '.main_content .board_wrap .tlist' ),
 	ampTableHead   = ampTable.tHead,
-	gFAQsSortNav   = document.querySelector( '.tsort' ),
+	gFAQsSortNav   = document.getElementsByClassName( 'tsort' )[0],
 	gFAQsSortIcon  = ampTableHead.querySelector( 'span[class*="icon-angle"]' ),
-	gFAQsSortLinks = Array.prototype.slice.call( ampTableHead.querySelectorAll( 'a' ) ),
+	gFAQsSortLinks = Array.prototype.slice.call( ampTableHead.getElementsByTagName( 'a' ) ),
 	ampTableBody   = ampTable.tBodies[0],
-	ampRows        = ampTableBody.querySelectorAll( 'tr' ),
+	ampRows        = ampTableBody.getElementsByTagName( 'tr' ),
 	preSortBtn     = null,
 	cells          = {
 		// Converting HTMLCollections to Arrays to allow usage of forEach later on
-		board:     Array.prototype.slice.call( ampTableBody.querySelectorAll( '.tboard' ) ),
-		status:    Array.prototype.slice.call( ampTableBody.querySelectorAll( '.board_status' ) ),
-		title:     Array.prototype.slice.call( ampTableBody.querySelectorAll( '.topichalf' ) ),
-		msgs:      Array.prototype.slice.call( ampTableBody.querySelectorAll( '.tcount' ) ),
-		lastposts: Array.prototype.slice.call( ampTableBody.querySelectorAll( '.lastpost' ) )
+		board:     Array.prototype.slice.call( ampTableBody.getElementsByClassName( 'tboard' ) ),
+		status:    Array.prototype.slice.call( ampTableBody.getElementsByClassName( 'board_status' ) ),
+		title:     Array.prototype.slice.call( ampTableBody.getElementsByClassName( 'topichalf' ) ),
+		msgs:      Array.prototype.slice.call( ampTableBody.getElementsByClassName( 'tcount' ) ),
+		lastposts: Array.prototype.slice.call( ampTableBody.getElementsByClassName( 'lastpost' ) )
 	},
 	sortSettings = JSON.parse( GM_getValue( 'o120-sort-settings', JSON.stringify( {
 		sortedColumn: 4,
@@ -51,6 +50,7 @@ for ( i = 0; i < cssRLen; i++ ) {
 		sortBtnHoverBG = siteCSS[ i ].style[ 'background' ];
 	}
 }
+
 /**
  * Add script CSS
  */
