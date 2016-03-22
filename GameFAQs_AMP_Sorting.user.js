@@ -3,26 +3,32 @@
 // @namespace       OTACON120
 // @author          OTACON120
 // @license         http://opensource.org/licenses/MIT
-// @version         2.0.2
+// @version         2.0.3
 // @description     Gives the ability to sort GameFAQs Message Boards' "Active Messages" list
 // @updateURL       http://otacon120.com/user-script-files/meta/gamefaqs-related/amp-sorting/
 // @downloadURL     http://otacon120.com/user-script-files/script/gamefaqs-related/amp-sorting/GameFAQs_AMP_Sorting.user.js
 // @website         http://otacon120.com/scripts/amp-sorting/
 // @contributionURL https://www.paypal.com/us/cgi-bin/webscr?cmd=_flow&SESSION=LgkxqunuQlKnhicHni4dzQajlENrZQbtNOuCyKJcbq1o5msoIEB0UyzAZYS&dispatch=5885d80a13c0db1f8e263663d3faee8dbd0a2170b502f343d92a90377a9956d7
-// @match       http://*.gamefaqs.com/user/messages*
+// @match       *://*.gamefaqs.com/user/messages*
 // @grant       GM_getValue
-// @grant       GM_setValue
+// @grant       GM_deleteValue
 // @grant       GM_addStyle
 // ==/UserScript==
 
+// Transfer any current saved data to localStorage and delete GM-saved values in preparation of phasing out GM_*etValue functions
+if ( localStorage.getItem( 'o120-sort-settings' ) === null ) {
+	localStorage.setItem( 'o120-sort-settings', GM_getValue( 'o120-sort-settings' ) );
+	GM_deleteValue( 'o120-sort-settings' );
+}
+
 var i, sortBtnHoverBG, ampSort,
-	siteCSS        = document.styleSheets[0].cssRules,
+	siteCSS        = document.styleSheets[2].cssRules,
 	cssRLen        = siteCSS.length;
 	sortBtnStyle   = getComputedStyle( document.querySelector( '.main_content .paginate > li > a' ) ),
 	ampTable       = document.querySelector( '.main_content .board_wrap .tlist' ),
 	ampTableHead   = ampTable.tHead,
 	gFAQsSortNav   = document.getElementsByClassName( 'tsort' )[0],
-	gFAQsSortIcon  = ampTableHead.querySelector( 'span[class*="icon-angle"]' ),
+	gFAQsSortIcon  = ampTableHead.querySelector( 'span[class*="fa-angle"]' ),
 	gFAQsSortLinks = Array.prototype.slice.call( ampTableHead.getElementsByTagName( 'a' ) ),
 	ampTableBody   = ampTable.tBodies[0],
 	ampRows        = ampTableBody.getElementsByTagName( 'tr' ),
@@ -35,11 +41,7 @@ var i, sortBtnHoverBG, ampSort,
 		msgs:      Array.prototype.slice.call( ampTableBody.getElementsByClassName( 'tcount' ) ),
 		lastposts: Array.prototype.slice.call( ampTableBody.getElementsByClassName( 'lastpost' ) )
 	},
-	sortSettings = JSON.parse( GM_getValue( 'o120-sort-settings', JSON.stringify( {
-		sortedColumn: 4,
-		subSort:      null,
-		sortOrder:    'dsc'
-	} ) ) );
+	sortSettings = JSON.parse( localStorage.getItem( 'o120-sort-settings' ) ) || JSON.parse( "{sortedColumn: 4,subSort:null,sortOrder:'dsc'}" );
 
 // Clone sortSettings to regular localStorage in preparation for future transition to localStorage over current GM_setValue storage
 localStorage.setItem( 'o120-sort-settings', JSON.stringify( sortSettings ) );
@@ -74,7 +76,7 @@ ul.paginate.tsort {\
 .o120-sorted-asc:after,\
 .o120-sorted-dsc:after {\
 	display: inline-block;\
-	font: normal normal 14px/1 "fontawesome-webfont";\
+	font: normal normal 14px/1 "FontAwesome";\
 	text-decoration: inherit;\
 	padding: 0 4px;\
 }\
@@ -236,8 +238,13 @@ function topicColSort( that, sortColumn ) {
  * This is what we're here for! Main sorting function.
  */
 function TableSort( el ) {
-	var i,
-		headings;
+	if ( window.top !== window.self ) {
+		return;
+	}
+
+	console.log( el );
+
+	var i, headings;
 
 	this.tbl = el;
 	this.lastSortedTh = null;
@@ -284,7 +291,7 @@ TableSort.prototype.makeSortable = function () {
 					type:       'button',
 					id:         'o120-topichalf-sort-btn',
 					className:  'o120-sort-btn',
-					content:    '<i class="icon icon-font"></i> Title',
+					content:    '<i class="fa fa-font"></i> Title',
 					sortColumn: 'topichalf'
 				}
 			};
@@ -433,9 +440,6 @@ TableSort.prototype.sortCol = function ( el, btn, sortColumn, sortOrder ) {
 	sortSettings.subSort      = sortColumn;
 	sortSettings.sortedColumn = th.cIdx;
 
-	GM_setValue( 'o120-sort-settings', JSON.stringify( sortSettings ) );
-
-	// Clone sortSettings to regular localStorage in preparation for future transition to localStorage over current GM_setValue storage
 	localStorage.setItem( 'o120-sort-settings', JSON.stringify( sortSettings ) );
 
 	/*

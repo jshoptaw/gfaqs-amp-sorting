@@ -19,6 +19,13 @@ Use with one of the following browser extensions:
 Release Notes
 =============
 
+Version 2.0.3
+-------------
+_Released 2016-03-21_
+
+*	Updated to use new FontAwesome classes after recent GameFAQs font update
+*	Switch to only using `localStorage` for sort settings
+
 Version 2.0.2
 -------------
 _Released 2015-09-29_
