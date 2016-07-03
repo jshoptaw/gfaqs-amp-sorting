@@ -19,6 +19,13 @@ Use with one of the following browser extensions:
 Release Notes
 =============
 
+Version 2.1.0
+-------------
+_Released 2016-07-02_
+
+*	Optimized process used to select the correct stylesheet of the active site display style
+*	Completely transitioned from GM_*etValue functions to native localStorage
+
 Version 2.0.3
 -------------
 _Released 2016-03-21_

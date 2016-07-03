@@ -3,26 +3,19 @@
 // @namespace       OTACON120
 // @author          OTACON120
 // @license         http://opensource.org/licenses/MIT
-// @version         2.0.3
+// @version         2.1.0
 // @description     Gives the ability to sort GameFAQs Message Boards' "Active Messages" list
 // @updateURL       http://otacon120.com/user-script-files/meta/gamefaqs-related/amp-sorting/
 // @downloadURL     http://otacon120.com/user-script-files/script/gamefaqs-related/amp-sorting/GameFAQs_AMP_Sorting.user.js
 // @website         http://otacon120.com/scripts/amp-sorting/
 // @contributionURL https://www.paypal.com/us/cgi-bin/webscr?cmd=_flow&SESSION=LgkxqunuQlKnhicHni4dzQajlENrZQbtNOuCyKJcbq1o5msoIEB0UyzAZYS&dispatch=5885d80a13c0db1f8e263663d3faee8dbd0a2170b502f343d92a90377a9956d7
 // @match       *://*.gamefaqs.com/user/messages*
-// @grant       GM_getValue
-// @grant       GM_deleteValue
-// @grant       GM_addStyle
+// @require     https://greasyfork.org/scripts/6414-grant-none-shim/code/%22@grant%20none%22%20Shim.js
+// @grant       none
 // ==/UserScript==
 
-// Transfer any current saved data to localStorage and delete GM-saved values in preparation of phasing out GM_*etValue functions
-if ( localStorage.getItem( 'o120-sort-settings' ) === null ) {
-	localStorage.setItem( 'o120-sort-settings', GM_getValue( 'o120-sort-settings' ) );
-	GM_deleteValue( 'o120-sort-settings' );
-}
-
 var i, sortBtnHoverBG, ampSort,
-	siteCSS        = document.styleSheets[2].cssRules,
+	siteCSS        = [].slice.call( document.styleSheets ),
 	cssRLen        = siteCSS.length;
 	sortBtnStyle   = getComputedStyle( document.querySelector( '.main_content .paginate > li > a' ) ),
 	ampTable       = document.querySelector( '.main_content .board_wrap .tlist' ),
@@ -41,10 +34,14 @@ var i, sortBtnHoverBG, ampSort,
 		msgs:      Array.prototype.slice.call( ampTableBody.getElementsByClassName( 'tcount' ) ),
 		lastposts: Array.prototype.slice.call( ampTableBody.getElementsByClassName( 'lastpost' ) )
 	},
-	sortSettings = JSON.parse( localStorage.getItem( 'o120-sort-settings' ) ) || JSON.parse( "{sortedColumn: 4,subSort:null,sortOrder:'dsc'}" );
+	sortSettings = JSON.parse( localStorage.getItem( 'o120-sort-settings' ) ) || { sortedColumn: 4, subSort: null, sortOrder:'dsc' };
 
-// Clone sortSettings to regular localStorage in preparation for future transition to localStorage over current GM_setValue storage
-localStorage.setItem( 'o120-sort-settings', JSON.stringify( sortSettings ) );
+	siteCSS.forEach( function( el ) {
+		if ( el.ownerNode.nodeName === 'LINK' && el.href.search( 'gamefaqs.com/css/' ) !== -1 ) {
+			siteCSS = el.cssRules;
+			console.log( siteCSS );
+		}
+	} );
 
 // Get ".paginate > li > a:hover" style
 for ( i = 0; i < cssRLen; i++ ) {
@@ -241,8 +238,6 @@ function TableSort( el ) {
 	if ( window.top !== window.self ) {
 		return;
 	}
-
-	console.log( el );
 
 	var i, headings;
 
